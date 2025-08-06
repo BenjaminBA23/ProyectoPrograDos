@@ -2,12 +2,12 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package minerojuego.vista;
+package buscaminas.modelo;
 
 /**
  *
  * @author pame
  */
-public class JuegoGUI {
+public class Tablero {
     
 }
