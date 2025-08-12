@@ -301,7 +301,7 @@ int numFilas=10;
     }//GEN-LAST:event_comenzarJuegoActionPerformed
 
     private void ElegirMinasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ElegirMinasActionPerformed
-        int num = 0;
+         int num = 0;
     boolean valido = false;
 
     while (!valido) {
