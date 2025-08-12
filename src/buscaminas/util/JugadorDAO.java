@@ -6,7 +6,10 @@ package buscaminas.util;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -49,7 +52,36 @@ public class JugadorDAO {
     }
     
     
-    //
+    public DefaultTableModel obtenerEstadisticasModelo() {
+        String[] cols = {"Jugador", "Ganadas", "Perdidas", "Total", "WinRate %"};
+        DefaultTableModel modelo = new DefaultTableModel(cols, 0) {
+            @Override public boolean isCellEditable(int r, int c) { return false; }
+        };
+
+        String sql = "SELECT nombre, partidas_ganadas, partidas_perdidas " +
+                     "FROM jugador ORDER BY partidas_ganadas DESC, nombre ASC";
+
+        try (Connection conn = ConexionBD.getConexion();
+             Statement st = conn.createStatement();
+             ResultSet rs = st.executeQuery(sql)) {
+
+            boolean hay = false;
+            while (rs.next()) {
+                hay = true;
+                String n = rs.getString("nombre");
+                int g = rs.getInt("partidas_ganadas");
+                int p = rs.getInt("partidas_perdidas");
+                int tot = g + p;
+                double wr = tot == 0 ? 0.0 : (g * 100.0) / tot;
+                modelo.addRow(new Object[]{ n, g, p, tot, String.format("%.1f", wr) });
+            }
+            if (!hay) modelo.addRow(new Object[]{"(sin datos)", 0, 0, 0, "0.0"});
+
+        } catch (SQLException e) {
+            System.err.println("obtenerEstadisticasModelo: " + e.getMessage());
+        }
+        return modelo;
+    }
     
     
     //
