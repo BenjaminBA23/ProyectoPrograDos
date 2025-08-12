@@ -84,6 +84,20 @@ public class JugadorDAO {
     }
     
     
-    //
+    public int[] obtenerTotales() {
+        String sql = "SELECT SUM(partidas_ganadas) g, SUM(partidas_perdidas) p FROM jugador";
+        try (Connection conn = ConexionBD.getConexion();
+             Statement st = conn.createStatement();
+             ResultSet rs = st.executeQuery(sql)) {
+            if (rs.next()) {
+                int g = rs.getInt("g");
+                int p = rs.getInt("p");
+                return new int[]{g, p, g + p};
+            }
+        } catch (SQLException e) {
+            System.err.println(" obtenerTotales: " + e.getMessage());
+        }
+        return new int[]{0,0,0};
+    }
     
 }
