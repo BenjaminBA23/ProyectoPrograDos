@@ -9,6 +9,8 @@ package buscaminas.vista;
 import buscaminas.modelo.Casilla;
 import buscaminas.modelo.Tablero;
 import buscaminas.util.JugadorDAO;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.List;
 import java.util.function.Consumer;
 import javax.swing.JButton;
@@ -189,10 +191,64 @@ int numFilas=10;
     });
     }
     
-    //
+    //aca se crea la interfaz y como van a ir los controles en el Jframe
+    private void cargarControles(){
+        
+        int posXReferencia=25;
+        int posYReferencia=25;
+        int anchoControl=30;
+        int altoControl=30;
+        
+        botonesTablero = new JButton[numFilas][numColumnas];
+        for (int i = 0; i < botonesTablero.length; i++) {//con el for se hace un recorrido en la matriz y luego se intancia los botones
+            for (int j = 0; j < botonesTablero[i].length; j++) {
+                botonesTablero[i][j]=new JButton();//instanciar los botones
+                botonesTablero[i][j].setName(i+","+j);//el lugar que van a tomar los botones
+                botonesTablero[i][j].setBorder(null);// esto es para que el boton salga sin bordes 
+                if (i==0 && j==0){
+                    botonesTablero[i][j].setBounds(posXReferencia, //el setBounds es para mostrar los botones pero hay que pasarle parametros como referencia
+                            posYReferencia, anchoControl, altoControl);
+                    
+                }else if (i==0 && j!=0){ //con esto se crea el resto de cuadros en jframe 
+                    botonesTablero[i][j].setBounds(
+                            botonesTablero[i][j-1].getX()+botonesTablero[i][j-1].getWidth(), //la pocision del cuadro va a ser la misma que el anterior mas lo que mide 
+                            posYReferencia, anchoControl, altoControl);
+                }else{// aca seria para las siguientes filas 
+                    botonesTablero[i][j].setBounds(
+                            botonesTablero[i-1][j].getX(), 
+                            botonesTablero[i-1][j].getY()+botonesTablero[i-1][j].getHeight(),  //la pocision del cuadro va a ser la misma que el anterior mas lo que mide 
+                            anchoControl, altoControl);                    
+                }
+                botonesTablero[i][j].addActionListener(new ActionListener() {//esto es la accioon que va a hacer el boton
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        btnClick(e);
+                    }
+
+                });
+                getContentPane().add(botonesTablero[i][j]); //con esto se agrega el control al contenerdor
+            }
+            
+        }
+        
+        //esto es para darle formato a la ventana y que se actualice para que no quede descuadrada 
+       this.setSize(botonesTablero[numFilas-1][numColumnas-1].getX()+
+                botonesTablero[numFilas-1][numColumnas-1].getWidth()+30,
+                botonesTablero[numFilas-1][numColumnas-1].getY()+
+                botonesTablero[numFilas-1][numColumnas-1].getHeight()+70
+                );
+    }
     
-    
-    //
+    private void btnClick(ActionEvent e) {
+        if (juegoTerminado) return; 
+        JButton btn = (JButton) e.getSource();
+        String[] coordenada = btn.getName().split(",");
+        int posFila = Integer.parseInt(coordenada[0]);
+        int posColumna = Integer.parseInt(coordenada[1]);
+       // tableroBuscaminas.seleccionarCasilla(posFila, posColumna);
+   
+
+    }
     
     
     
@@ -266,11 +322,7 @@ int numFilas=10;
     }// </editor-fold>//GEN-END:initComponents
 
     private void elegirTamanioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_elegirTamanioActionPerformed
-         juegoNuevo();
-    }//GEN-LAST:event_elegirTamanioActionPerformed
-
-    private void comenzarJuegoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comenzarJuegoActionPerformed
-        int num = 0;
+          int num = 0;
     boolean valido = false;
 
     while (!valido) {
@@ -298,6 +350,10 @@ int numFilas=10;
     this.numFilas = num;
     this.numColumnas = num;
     juegoNuevo();
+    }//GEN-LAST:event_elegirTamanioActionPerformed
+
+    private void comenzarJuegoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comenzarJuegoActionPerformed
+        juegoNuevo();
     }//GEN-LAST:event_comenzarJuegoActionPerformed
 
     private void ElegirMinasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ElegirMinasActionPerformed
