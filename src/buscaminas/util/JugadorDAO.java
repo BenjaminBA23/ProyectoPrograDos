@@ -37,7 +37,16 @@ public class JugadorDAO {
         }
     }
     
-    //
+    public void actualizarPerdidas(String nombre) {
+        String sql = "UPDATE jugador SET partidas_perdidas = partidas_perdidas + 1 WHERE nombre = ?";
+        try (Connection conn = ConexionBD.getConexion();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, nombre);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println(" actualizarPerdidas: " + e.getMessage());
+        }
+    }
     
     
     //
