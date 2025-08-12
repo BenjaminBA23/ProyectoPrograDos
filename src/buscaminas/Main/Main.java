@@ -4,10 +4,29 @@
  */
 package buscaminas.Main;
 
+import buscaminas.vista.MenuPrincipal;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+
 /**
  *
  * @author Ben
  */
 public class Main {
-    
+    public static void main(String[] args) {
+        
+        try {
+            for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (Exception ignore) {}
+
+        // Lanzar la UI en el EDT
+        SwingUtilities.invokeLater(() -> {
+            new MenuPrincipal().setVisible(true);
+        });
+    }
 }
