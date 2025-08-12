@@ -266,15 +266,68 @@ int numFilas=10;
     }// </editor-fold>//GEN-END:initComponents
 
     private void elegirTamanioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_elegirTamanioActionPerformed
-        // 
+         juegoNuevo();
     }//GEN-LAST:event_elegirTamanioActionPerformed
 
     private void comenzarJuegoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comenzarJuegoActionPerformed
-        // 
+        int num = 0;
+    boolean valido = false;
+
+    while (!valido) {
+        String input = JOptionPane.showInputDialog(this, 
+            "Por favor digite tamaño de la matriz (n*n), debe ser un número entero mayor a 3");
+
+        if (input == null) return; // Canceló
+
+        try {
+            num = Integer.parseInt(input); // Solo acepta enteros
+            if (num > 3) {
+                valido = true;
+            } else {
+                JOptionPane.showMessageDialog(this, 
+                    "El tamaño debe ser mayor a 3.", 
+                    "Valor inválido", JOptionPane.WARNING_MESSAGE);
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, 
+                "Por favor ingrese solo números enteros.", 
+                "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    this.numFilas = num;
+    this.numColumnas = num;
+    juegoNuevo();
     }//GEN-LAST:event_comenzarJuegoActionPerformed
 
     private void ElegirMinasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ElegirMinasActionPerformed
-        // 
+        int num = 0;
+    boolean valido = false;
+
+    while (!valido) {
+        String input = JOptionPane.showInputDialog(this, 
+            "Por favor digite número de minas (entero mayor a 3)");
+
+        if (input == null) return; // Canceló
+
+        try {
+            num = Integer.parseInt(input); // Solo enteros
+            if (num > 3 && num < (numFilas * numColumnas)) {
+                valido = true;
+            } else {
+                JOptionPane.showMessageDialog(this, 
+                    "El número de minas debe ser mayor a 3 y menor que el total de casillas.", 
+                    "Valor inválido", JOptionPane.WARNING_MESSAGE);
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, 
+                "Por favor ingrese solo números enteros.", 
+                "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    this.numMinas = num;
+    juegoNuevo();
     }//GEN-LAST:event_ElegirMinasActionPerformed
 
     /**
