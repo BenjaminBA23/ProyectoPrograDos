@@ -51,6 +51,10 @@ public class Casilla {
     public void setNumMinasAlrededor(int numMinasAlrededor) {
         this.numMinasAlrededor = numMinasAlrededor;
     }
+    
+    public void incrementarNumeroMinasAlrededor(){
+        this.numMinasAlrededor++;
+    }
 
     public boolean isAbierta() {
         return abierta;

@@ -21,6 +21,7 @@ import javax.swing.JOptionPane;
  *
  * @author Ben
  */
+//
 public class JuegoGUI extends javax.swing.JFrame {
 int numFilas=10;
     int numColumnas=10;
@@ -141,7 +142,7 @@ int numFilas=10;
     
     private void juegoNuevo() {
         descargarControles();
-        //cargarControles();
+        cargarControles();
         crearTableroBuscaminas();
         repaint();
     }
@@ -245,7 +246,7 @@ int numFilas=10;
         String[] coordenada = btn.getName().split(",");
         int posFila = Integer.parseInt(coordenada[0]);
         int posColumna = Integer.parseInt(coordenada[1]);
-       // tableroBuscaminas.seleccionarCasilla(posFila, posColumna);
+        tableroBuscaminas.seleccionarCasilla(posFila, posColumna);
    
 
     }

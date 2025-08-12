@@ -16,7 +16,7 @@ import javax.swing.table.DefaultTableModel;
  * @author pame
  */
 public class JugadorDAO {
-    
+    //
       public void registrarJugador(String nombre) {
         String sql = "IF NOT EXISTS (SELECT 1 FROM jugador WHERE nombre = ?) " +
                      "INSERT INTO jugador (nombre) VALUES (?)";
@@ -51,7 +51,7 @@ public class JugadorDAO {
         }
     }
     
-    
+    // ---- LECTURA para mostrar en JOptionPane (tabla) ----
     public DefaultTableModel obtenerEstadisticasModelo() {
         String[] cols = {"Jugador", "Ganadas", "Perdidas", "Total", "WinRate %"};
         DefaultTableModel modelo = new DefaultTableModel(cols, 0) {
@@ -83,12 +83,10 @@ public class JugadorDAO {
         return modelo;
     }
     
-    
+    // Totales generales
     public int[] obtenerTotales() {
         String sql = "SELECT SUM(partidas_ganadas) g, SUM(partidas_perdidas) p FROM jugador";
-        try (Connection conn = ConexionBD.getConexion();
-             Statement st = conn.createStatement();
-             ResultSet rs = st.executeQuery(sql)) {
+        try (Connection conn = ConexionBD.getConexion(); Statement st = conn.createStatement(); ResultSet rs = st.executeQuery(sql)) {
             if (rs.next()) {
                 int g = rs.getInt("g");
                 int p = rs.getInt("p");
@@ -97,7 +95,6 @@ public class JugadorDAO {
         } catch (SQLException e) {
             System.err.println(" obtenerTotales: " + e.getMessage());
         }
-        return new int[]{0,0,0};
+        return new int[]{0, 0, 0};
     }
-    
 }

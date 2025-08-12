@@ -3,7 +3,6 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package buscaminas.modelo;
-
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -46,7 +45,7 @@ public class Tablero {
     }
     
     
-      /*
+      
     private void generarMinas(int posFilaIgnorar, int posColumnaIgnorar) {
         int minasGeneradas = 0;//variable temp
         while (minasGeneradas != numMinas) {//mientras minas sea diferente
@@ -65,7 +64,7 @@ public class Tablero {
         this.imprimirTablero();
     }
     
-    /*
+    
     //para imprimir la forma del tablero 
     private void imprimirTablero() {
         for (int i = 0; i < casillas.length; i++) {
@@ -74,13 +73,13 @@ public class Tablero {
             }
             System.out.println("");
         }
-    }*/
+    }
 
     //para imprimir la forma de las pisatas (los numero)
     private void imprimirPistas() {
         for (int i = 0; i < casillas.length; i++) {
             for (int j = 0; j < casillas[i].length; j++) {
-               // System.out.print(casillas[i][j].getNumMinasAlrededor());
+               System.out.print(casillas[i][j].getNumMinasAlrededor());
             }
             System.out.println("");
         }
@@ -88,23 +87,23 @@ public class Tablero {
 
     public static void main(String[] args) {
         Tablero tablero = new Tablero(5, 5, 5);
-        //tablero.imprimirTablero();
+        tablero.imprimirTablero();
         System.out.println("---");
         tablero.imprimirPistas();
        
     }
     
-    /*
+    
     private void actualizarNumeroMinasAlrededor() {
         for (int i = 0; i < casillas.length; i++) {
             for (int j = 0; j < casillas[i].length; j++) {
                 if (casillas[i][j].isMina()) {
-                    //List<Casilla> casillasAlrededor = obtenerCasillasAlrededor(i, j);
-                    //casillasAlrededor.forEach((c)->c.incrementarNumeroMinasAlrededor());
+                    List<Casilla> casillasAlrededor = obtenerCasillasAlrededor(i, j);
+                    casillasAlrededor.forEach((c)->c.incrementarNumeroMinasAlrededor());
                 }
             }
         }
-    }*/
+    }
     
     private List<Casilla> obtenerCasillasAlrededor(int posFila, int posColumna) {
         List<Casilla> listaCasillas = new LinkedList<>();
@@ -163,7 +162,7 @@ public class Tablero {
         return casillasConMinas;
     }
     
-    /*public void seleccionarCasilla(int posFila, int posColumna) {
+    public void seleccionarCasilla(int posFila, int posColumna) {
         if (!this.generacionMinas) {
             this.generarMinas(posFila, posColumna);
         }
@@ -184,7 +183,7 @@ public class Tablero {
         if (partidaGanada()) {
             eventoPartidaGanada.accept(obtenerCasillasConMinas());
         }
-    }*/
+    }
     
     public void marcarCasillaAbierta(int posFila, int posColumna) {
         if (!this.casillas[posFila][posColumna].isAbierta()) {
