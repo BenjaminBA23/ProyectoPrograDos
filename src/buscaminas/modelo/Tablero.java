@@ -19,7 +19,7 @@ public class Tablero {
     int numMinas;
     boolean generacionMinas;
     int numCasillasAbiertas;
-    
+    private int numMarcas = 0;
     private Consumer<List<Casilla>> eventoPartidaPerdida;
     private Consumer<List<Casilla>> eventoPartidaGanada;
 
@@ -163,6 +163,10 @@ public class Tablero {
     }
     
     public void seleccionarCasilla(int posFila, int posColumna) {
+        // >>> NUEVO: no abrir si está marcada
+        if (this.casillas[posFila][posColumna].isMarcada()) {
+            return;
+        }
         if (!this.generacionMinas) {
             this.generarMinas(posFila, posColumna);
         }
@@ -183,6 +187,44 @@ public class Tablero {
         if (partidaGanada()) {
             eventoPartidaGanada.accept(obtenerCasillasConMinas());
         }
+    }
+    
+    // >>> NUEVO <<<
+// Alterna bandera en una casilla. Devuelve true si cambió algo.
+    public boolean toggleMarca(int posFila, int posColumna) {
+        Casilla c = this.casillas[posFila][posColumna];
+
+        // No puedes marcar una casilla ya abierta
+        if (c.isAbierta()) {
+            return false;
+        }
+
+        // Si no está marcada y ya alcanzaste el máximo de marcas, no dejes marcar más
+        if (!c.isMarcada() && numMarcas >= numMinas) {
+            return false;
+        }
+
+        c.setMarcada(!c.isMarcada());
+        if (c.isMarcada()) {
+            numMarcas++;
+        } else {
+            numMarcas--;
+        }
+
+        return true;
+    }
+    
+    private boolean todasLasMinasMarcadas() {
+        int marcadas = 0;
+        for (int i = 0; i < numFilas; i++) {
+            for (int j = 0; j < numColumnas; j++) {
+                Casilla c = casillas[i][j];
+                if (c.isMina() && c.isMarcada()) {
+                    marcadas++;
+                }
+            }
+        }
+        return marcadas == numMinas;
     }
     
     public void marcarCasillaAbierta(int posFila, int posColumna) {
@@ -209,5 +251,7 @@ public class Tablero {
         this.eventoPartidaGanada = eventoPartidaGanada;
     }
     
-    
+    public Casilla getCasilla(int f, int c) { 
+    return casillas[f][c]; 
+}
 }

@@ -15,7 +15,8 @@ import java.util.List;
 import java.util.function.Consumer;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
-
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 /**
  *
@@ -45,6 +46,8 @@ int numFilas=10;
         crearTableroBuscaminas();
         
     }
+    
+    
     
     //esto va a bloquear el tablero en caso de perdida
     private void bloquearTablero() {
@@ -227,6 +230,42 @@ int numFilas=10;
                     }
 
                 });
+                
+                botonesTablero[i][j].addMouseListener(new java.awt.event.MouseAdapter() {
+                    @Override
+                    public void mousePressed(java.awt.event.MouseEvent e) {
+                        if (juegoTerminado) {
+                            return;
+                        }
+
+                        // Solo botón derecho
+                        if (javax.swing.SwingUtilities.isRightMouseButton(e)) {
+                            JButton btn = (JButton) e.getSource();
+                            String[] coord = btn.getName().split(",");
+                            int f = Integer.parseInt(coord[0]);
+                            int c = Integer.parseInt(coord[1]);
+
+                            // Alternar marca en el modelo
+                            boolean cambio = tableroBuscaminas.toggleMarca(f, c);
+                            if (!cambio) {
+                                // Límite de banderas alcanzado o casilla abierta
+                                java.awt.Toolkit.getDefaultToolkit().beep();
+                                return;
+                            }
+
+                            // Reflejar visualmente usando el estado real
+                            buscaminas.modelo.Casilla cas = tableroBuscaminas.getCasilla(f, c);
+                            if (cas.isMarcada()) {
+                                // Usa "⚑" (o "F" si prefieres ASCII)
+                                btn.setText("⚑");
+                                // No deshabilites; debe poder desmarcarse
+                            } else {
+                                // Limpia el texto al desmarcar
+                                btn.setText("");
+                            }
+                        }
+                    }
+                });
                 getContentPane().add(botonesTablero[i][j]); //con esto se agrega el control al contenerdor
             }
             
@@ -323,24 +362,30 @@ int numFilas=10;
     }// </editor-fold>//GEN-END:initComponents
 
     private void elegirTamanioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_elegirTamanioActionPerformed
-          int num = 0;
+int num = 0;
     boolean valido = false;
 
     while (!valido) {
-        String input = JOptionPane.showInputDialog(this, 
-            "Por favor digite tamaño de la matriz (n*n), debe ser un número entero mayor a 3");
+        String input = JOptionPane.showInputDialog(this,
+            "Por favor digite tamaño de la matriz (n*n), debe ser un número entero mayor a 3 y máximo 25");
 
         if (input == null) return; // Canceló
 
         try {
             num = Integer.parseInt(input); // Solo acepta enteros
-            if (num > 3) {
+
+            if (num > 3 && num <= 25) {
                 valido = true;
-            } else {
+            } else if (num <= 3) {
                 JOptionPane.showMessageDialog(this, 
                     "El tamaño debe ser mayor a 3.", 
                     "Valor inválido", JOptionPane.WARNING_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(this, 
+                    "El tamaño máximo permitido es 25.", 
+                    "Valor inválido", JOptionPane.WARNING_MESSAGE);
             }
+
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(this, 
                 "Por favor ingrese solo números enteros.", 
@@ -358,24 +403,30 @@ int numFilas=10;
     }//GEN-LAST:event_comenzarJuegoActionPerformed
 
     private void ElegirMinasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ElegirMinasActionPerformed
-         int num = 0;
+int num = 0;
     boolean valido = false;
 
     while (!valido) {
         String input = JOptionPane.showInputDialog(this, 
-            "Por favor digite número de minas (entero mayor a 3)");
+            "Por favor digite número de minas (entero mayor a 3 y menor a 90)");
 
         if (input == null) return; // Canceló
 
         try {
             num = Integer.parseInt(input); // Solo enteros
-            if (num > 3 && num < (numFilas * numColumnas)) {
+
+            if (num > 3 && num < 90) {
                 valido = true;
+            } else if (num <= 3) {
+                JOptionPane.showMessageDialog(this, 
+                    "El número de minas debe ser mayor a 3.", 
+                    "Valor inválido", JOptionPane.WARNING_MESSAGE);
             } else {
                 JOptionPane.showMessageDialog(this, 
-                    "El número de minas debe ser mayor a 3 y menor que el total de casillas.", 
+                    "El número de minas debe ser menor que 90.", 
                     "Valor inválido", JOptionPane.WARNING_MESSAGE);
             }
+
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(this, 
                 "Por favor ingrese solo números enteros.", 

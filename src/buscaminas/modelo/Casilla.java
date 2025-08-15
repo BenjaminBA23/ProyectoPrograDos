@@ -14,6 +14,7 @@ public class Casilla {
     private boolean mina;
     private int numMinasAlrededor;
     private boolean abierta;
+    private boolean marcada;
 
     public Casilla(int posFila, int posColumna) {
         this.posFila = posFila;
@@ -63,7 +64,14 @@ public class Casilla {
     public void setAbierta(boolean abierta) {
         this.abierta = abierta;
     }
-    
+
+    public boolean isMarcada() {
+        return marcada;
+    }
+
+    public void setMarcada(boolean marcada) {
+        this.marcada = marcada;
+    }
     
     
 }
