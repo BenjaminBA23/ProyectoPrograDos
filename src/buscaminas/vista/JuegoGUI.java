@@ -137,8 +137,8 @@ int numFilas=10;
         }
     }
       
-        // Pregunta si hay una partida en curso y, si el usuario acepta, la cuenta como derrota.
-        // Devuelve true si se puede continuar con el cambio de “extra”; false si el usuario canceló.
+    // Pregunta si hay una partida en curso y, si el usuario acepta, la cuenta como derrota.
+    // Devuelve true si se puede continuar con el cambio de “extra”; false si el usuario canceló.
     private boolean confirmarAbandonoSiEnJuego() {
         boolean enCurso = (tableroBuscaminas != null && !juegoTerminado && casillasDestapadas > 0);
 
@@ -166,7 +166,6 @@ int numFilas=10;
         }
         return false; // el usuario canceló
     }
-    
       
     private void verificarVictoria() {
         int totalSinMinas = (numFilas * numColumnas) - numMinas;
@@ -407,7 +406,7 @@ int numFilas=10;
     }// </editor-fold>//GEN-END:initComponents
 
     private void elegirTamanioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_elegirTamanioActionPerformed
-// Preguntar por abandono si hay partida en curso
+    // Preguntar por abandono si hay partida en curso
     if (!confirmarAbandonoSiEnJuego()) return;
 
     int num = 0;
