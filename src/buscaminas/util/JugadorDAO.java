@@ -97,4 +97,29 @@ public class JugadorDAO {
         }
         return new int[]{0, 0, 0};
     }
+    // se fija si exite un jugador con ese nombre en la base de datos 
+     public boolean existeJugador(String nombre) {
+        final String sql = "SELECT 1 FROM jugador WHERE nombre = ?";
+        try (Connection conn = ConexionBD.getConexion(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, nombre);
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next();
+            }
+        } catch (SQLException e) {
+            System.err.println("existeJugador: " + e.getMessage());
+        }
+        return false;
+    }
+
+// Crea un jugador nuevo con 0 ganadas y 0 perdidas
+    public boolean crearJugador(String nombre) {
+        final String sql = "INSERT INTO jugador (nombre, partidas_ganadas, partidas_perdidas) VALUES (?, 0, 0)";
+        try (Connection conn = ConexionBD.getConexion(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, nombre);
+            return ps.executeUpdate() == 1;
+        } catch (SQLException e) {
+            System.err.println("crearJugador: " + e.getMessage());
+        }
+        return false;
+    }
 }

@@ -119,24 +119,59 @@ public class MenuPrincipal extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnIniciarJuegoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIniciarJuegoActionPerformed
-        nombreJugador = JOptionPane.showInputDialog(this, "Ingrese su nombre:");
+          String nombre = javax.swing.JOptionPane.showInputDialog(
+        this,
+        "Ingrese su nombre de jugador:"
+    );
 
-        if (nombreJugador == null) return; // Canceló
-        nombreJugador = nombreJugador.trim();
+    if (nombre == null) return; // canceló
+    nombre = nombre.trim();
 
-        if (nombreJugador.isEmpty() || !nombreJugador.matches("[a-zA-Z ]+")) {
-            JOptionPane.showMessageDialog(this, "Nombre inválido. Solo letras y no vacio.");
+    if (nombre.isEmpty()) {
+        javax.swing.JOptionPane.showMessageDialog(
+            this,
+            "El nombre no puede estar vacío.",
+            "Dato requerido",
+            javax.swing.JOptionPane.WARNING_MESSAGE
+        );
+        return;
+    }
+
+    boolean existe = jugadorDAO.existeJugador(nombre);
+
+    if (existe) {
+        int op = javax.swing.JOptionPane.showConfirmDialog(
+            this,
+            "El jugador \"" + nombre + "\" ya existe.\n¿Deseas continuar con ese perfil?",
+            "Usar jugador existente",
+            javax.swing.JOptionPane.YES_NO_OPTION
+        );
+        if (op != javax.swing.JOptionPane.YES_OPTION) return;
+
+    } else {
+        int op = javax.swing.JOptionPane.showConfirmDialog(
+            this,
+            "No existe un jugador con ese nombre.\n¿Deseas crearlo?",
+            "Crear jugador",
+            javax.swing.JOptionPane.YES_NO_OPTION
+        );
+        if (op != javax.swing.JOptionPane.YES_OPTION) return;
+
+        boolean ok = jugadorDAO.crearJugador(nombre);
+        if (!ok) {
+            javax.swing.JOptionPane.showMessageDialog(
+                this,
+                "No fue posible crear el jugador. Intenta de nuevo.",
+                "Error",
+                javax.swing.JOptionPane.ERROR_MESSAGE
+            );
             return;
         }
+    }
 
-        // Registrar jugador en la BD si no existe
-        jugadorDAO.registrarJugador(nombreJugador);
-        JOptionPane.showMessageDialog(this, "Jugador '" + nombreJugador + "' registrado correctamente.", "Registro Exitoso", JOptionPane.INFORMATION_MESSAGE);
-
-        // Abrir el juego
-        JuegoGUI juego = new JuegoGUI(nombreJugador);
-        juego.setVisible(true);
-        this.dispose();
+    // Abrir el juego con ese nombre
+    new JuegoGUI(nombre).setVisible(true);
+    this.dispose(); // 
     }//GEN-LAST:event_btnIniciarJuegoActionPerformed
 
     private void btnVerEstadísticasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVerEstadísticasActionPerformed
