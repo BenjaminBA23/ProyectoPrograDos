@@ -15,8 +15,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+
 
 /**
  *
@@ -64,10 +63,14 @@ int numFilas=10;
         juegoTerminado = true;
     }
     
-    private void perderJuego() {
+      private void perderJuego() {
         if (juegoTerminado) {
             return;
         }
+
+        juegoTerminado = true; // <- marca fin de la partida
+        bloquearTablero();
+
         try {
             jugadorDAO.actualizarPerdidas(nombreJugador);
         } catch (Exception ignore) {
@@ -75,11 +78,10 @@ int numFilas=10;
 
         JOptionPane.showMessageDialog(
                 this,
-                "Oh no! ¡Perdiste! Pisaste una mina.\nTus datos se han guardado en la base de datos.",
+                "💥 ¡Perdiste! Pisaste una mina.\nTus datos se han guardado en la base de datos.",
                 "Fin del juego",
                 JOptionPane.ERROR_MESSAGE
         );
-        bloquearTablero();
 
         int resp = JOptionPane.showConfirmDialog(
                 this,
@@ -87,17 +89,25 @@ int numFilas=10;
                 "Reintentar",
                 JOptionPane.YES_NO_OPTION
         );
+
         if (resp == JOptionPane.YES_OPTION) {
-            // Reinicia una nueva partida con el mismo jugador
-            new JuegoGUI(nombreJugador).setVisible(true);
+            // Reusar esta misma ventana
+            juegoNuevo();  // <- limpia y crea nuevo tablero
+        } else {
+            // Cerrar solo esta ventana y volver al menú
+            this.dispose();
+            new MenuPrincipal().setVisible(true);
         }
-        dispose();
     }
-    
-      private void ganarJuego() {
+
+    private void ganarJuego() {
         if (juegoTerminado) {
             return;
         }
+
+        juegoTerminado = true;// <- marca fin de la partida
+        bloquearTablero();
+
         try {
             jugadorDAO.actualizarGanadas(nombreJugador);
         } catch (Exception ignore) {
@@ -109,7 +119,6 @@ int numFilas=10;
                 "Victoria",
                 JOptionPane.INFORMATION_MESSAGE
         );
-        bloquearTablero();
 
         int resp = JOptionPane.showConfirmDialog(
                 this,
@@ -117,11 +126,47 @@ int numFilas=10;
                 "Nueva partida",
                 JOptionPane.YES_NO_OPTION
         );
+
         if (resp == JOptionPane.YES_OPTION) {
-            new JuegoGUI(nombreJugador).setVisible(true);
+            // Reusar esta misma ventana
+            juegoNuevo();
+        } else {
+            // Cerrar solo esta ventana y volver al menú
+            this.dispose();
+            new MenuPrincipal().setVisible(true);
         }
-        dispose();
     }
+      
+        // Pregunta si hay una partida en curso y, si el usuario acepta, la cuenta como derrota.
+        // Devuelve true si se puede continuar con el cambio de “extra”; false si el usuario canceló.
+    private boolean confirmarAbandonoSiEnJuego() {
+        boolean enCurso = (tableroBuscaminas != null && !juegoTerminado && casillasDestapadas > 0);
+
+        if (!enCurso) {
+            return true; // No hay nada en curso, seguir normal
+        }
+        int op = javax.swing.JOptionPane.showConfirmDialog(
+                this,
+                "Hay una partida en curso.\nSi continúas, se contará como DERROTA.\n\n¿Deseas abandonar la partida?",
+                "Abandonar partida",
+                javax.swing.JOptionPane.YES_NO_OPTION,
+                javax.swing.JOptionPane.WARNING_MESSAGE
+        );
+
+        if (op == javax.swing.JOptionPane.YES_OPTION) {
+            // Registrar derrota
+            try {
+                jugadorDAO.actualizarPerdidas(nombreJugador);
+            } catch (Exception ex) {
+                System.err.println("Error al actualizar derrota: " + ex.getMessage());
+            }
+            // Marcar la partida actual como terminada
+            juegoTerminado = true;
+            return true; // continuar con el cambio del “extra”
+        }
+        return false; // el usuario canceló
+    }
+    
       
     private void verificarVictoria() {
         int totalSinMinas = (numFilas * numColumnas) - numMinas;
@@ -362,7 +407,10 @@ int numFilas=10;
     }// </editor-fold>//GEN-END:initComponents
 
     private void elegirTamanioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_elegirTamanioActionPerformed
-int num = 0;
+// Preguntar por abandono si hay partida en curso
+    if (!confirmarAbandonoSiEnJuego()) return;
+
+    int num = 0;
     boolean valido = false;
 
     while (!valido) {
@@ -372,23 +420,23 @@ int num = 0;
         if (input == null) return; // Canceló
 
         try {
-            num = Integer.parseInt(input); // Solo acepta enteros
+            num = Integer.parseInt(input); // Solo enteros
 
             if (num > 3 && num <= 25) {
                 valido = true;
             } else if (num <= 3) {
-                JOptionPane.showMessageDialog(this, 
-                    "El tamaño debe ser mayor a 3.", 
+                JOptionPane.showMessageDialog(this,
+                    "El tamaño debe ser mayor a 3.",
                     "Valor inválido", JOptionPane.WARNING_MESSAGE);
             } else {
-                JOptionPane.showMessageDialog(this, 
-                    "El tamaño máximo permitido es 25.", 
+                JOptionPane.showMessageDialog(this,
+                    "El tamaño máximo permitido es 25.",
                     "Valor inválido", JOptionPane.WARNING_MESSAGE);
             }
 
         } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, 
-                "Por favor ingrese solo números enteros.", 
+            JOptionPane.showMessageDialog(this,
+                "Por favor ingrese solo números enteros.",
                 "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
@@ -403,39 +451,44 @@ int num = 0;
     }//GEN-LAST:event_comenzarJuegoActionPerformed
 
     private void ElegirMinasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ElegirMinasActionPerformed
-int num = 0;
-    boolean valido = false;
-
-    while (!valido) {
-        String input = JOptionPane.showInputDialog(this, 
-            "Por favor digite número de minas (entero mayor a 3 y menor a 90)");
-
-        if (input == null) return; // Canceló
-
-        try {
-            num = Integer.parseInt(input); // Solo enteros
-
-            if (num > 3 && num < 90) {
-                valido = true;
-            } else if (num <= 3) {
-                JOptionPane.showMessageDialog(this, 
-                    "El número de minas debe ser mayor a 3.", 
-                    "Valor inválido", JOptionPane.WARNING_MESSAGE);
-            } else {
-                JOptionPane.showMessageDialog(this, 
-                    "El número de minas debe ser menor que 90.", 
-                    "Valor inválido", JOptionPane.WARNING_MESSAGE);
-            }
-
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, 
-                "Por favor ingrese solo números enteros.", 
-                "Error", JOptionPane.ERROR_MESSAGE);
+        if (!confirmarAbandonoSiEnJuego()) {
+            return;
         }
-    }
 
-    this.numMinas = num;
-    juegoNuevo();
+        int num = 0;
+        boolean valido = false;
+
+        while (!valido) {
+            String input = JOptionPane.showInputDialog(this,
+                    "Por favor digite número de minas (entero mayor a 3 y menor a 90)");
+
+            if (input == null) {
+                return; // Canceló
+            }
+            try {
+                num = Integer.parseInt(input);
+
+                if (num > 3 && num < 90) {
+                    valido = true;
+                } else if (num <= 3) {
+                    JOptionPane.showMessageDialog(this,
+                            "El número de minas debe ser mayor a 3.",
+                            "Valor inválido", JOptionPane.WARNING_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(this,
+                            "El número de minas debe ser menor que 90.",
+                            "Valor inválido", JOptionPane.WARNING_MESSAGE);
+                }
+
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(this,
+                        "Por favor ingrese solo números enteros.",
+                        "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+
+        this.numMinas = num;
+        juegoNuevo();
     }//GEN-LAST:event_ElegirMinasActionPerformed
 
     /**
