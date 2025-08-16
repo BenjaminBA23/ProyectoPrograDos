@@ -5,22 +5,29 @@
 package buscaminas.modelo;
 
 /**
- *
+ *Representa una celda (casilla) del tablero de Buscaminas.
  * @author pame
+ *  * Estados principales:
+ * - mina:     indica si esta casilla contiene una mina.
+ * - abierta:  indica si el jugador ya destapó la casilla.
+ * - marcada:  indica si el jugador colocó una bandera (clic derecho).
+ * - numMinasAlrededor: cuántas minas hay en sus 8 vecinas.
+ * Posición:
+ * - posFila  y posColumna: ubicación dentro de la matriz del tablero.
  */
 public class Casilla {
-    private int posFila;
-    private int posColumna;
-    private boolean mina;
-    private int numMinasAlrededor;
-    private boolean abierta;
-    private boolean marcada;
+    private int posFila;//Fila en la matriz del tablero
+    private int posColumna;//Columna en la matriz del tablero
+    private boolean mina;//true si esta casilla contiene una mina
+    private int numMinasAlrededor;//Cantidad de minas en las casillas adyacentes (0..8).
+    private boolean abierta;//true si la casilla ya fue destapada por el jugador
+    private boolean marcada;//true si el jugador colocó una bandera (clic derecho)
 
     public Casilla(int posFila, int posColumna) {
         this.posFila = posFila;
         this.posColumna = posColumna;
     }
-
+    // Getters / Setters de posición
     public int getPosFila() {
         return posFila;
     }

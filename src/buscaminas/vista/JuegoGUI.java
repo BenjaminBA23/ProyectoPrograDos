@@ -99,7 +99,7 @@ int numFilas=10;
             new MenuPrincipal().setVisible(true);
         }
     }
-
+      // metodo de ganar partida 
     private void ganarJuego() {
         if (juegoTerminado) {
             return;
@@ -112,7 +112,7 @@ int numFilas=10;
             jugadorDAO.actualizarGanadas(nombreJugador);
         } catch (Exception ignore) {
         }
-
+        //mensaje de victoria
         JOptionPane.showMessageDialog(
                 this,
                 "🎉 ¡Felicidades " + nombreJugador + "! Has ganado.\nTus datos se han guardado en la base de datos.",
@@ -174,7 +174,7 @@ int numFilas=10;
         }
     }
    
-    
+    //quitar los controles y evitar sobre cargas del sistema
     void descargarControles() {
         if (botonesTablero != null) {
             for (int i = 0; i < botonesTablero.length; i++) {
@@ -186,7 +186,7 @@ int numFilas=10;
             }
         }
     }
-    
+    //metodo para iniciar el juego 
     private void juegoNuevo() {
         descargarControles();
         cargarControles();
@@ -404,7 +404,7 @@ int numFilas=10;
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+//esto es la accio a la hora de que el usuario toque el barItem
     private void elegirTamanioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_elegirTamanioActionPerformed
     // Preguntar por abandono si hay partida en curso
     if (!confirmarAbandonoSiEnJuego()) return;

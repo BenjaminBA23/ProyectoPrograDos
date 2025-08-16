@@ -10,6 +10,13 @@ import java.util.function.Consumer;
 /**
  *
  * @author pame
+ * Clase que representa el tablero de Buscaminas.
+ * Se encarga de:
+ *  - Inicializar la matriz de casillas.
+ *  - Colocar minas de manera aleatoria.
+ *  - Calcular las pistas (números alrededor).
+ *  - Gestionar la lógica al seleccionar casillas.
+ *  - Manejar eventos (partida ganada, perdida, casilla abierta).
  */
 public class Tablero {
      Casilla[][] casillas;//matriz para el tablero
@@ -20,11 +27,11 @@ public class Tablero {
     boolean generacionMinas;
     int numCasillasAbiertas;
     private int numMarcas = 0;
+    //EVENTOS (patrón con Consumer)
     private Consumer<List<Casilla>> eventoPartidaPerdida;
     private Consumer<List<Casilla>> eventoPartidaGanada;
-
     private Consumer<Casilla> eventoCasillaAbierta;
-
+    //  constructor
     public Tablero(int numFilas, int numColumnas, int numMinas) {
         this.numFilas = numFilas;
         this.numColumnas = numColumnas;
@@ -34,7 +41,7 @@ public class Tablero {
     }
 
    
-    
+    //Crea la matriz de casillas vacías (sin minas)
     private void inicializarCasillas() {
         casillas = new Casilla[this.numFilas][this.numColumnas];
         for (int i = 0; i < casillas.length; i++) {
@@ -45,6 +52,11 @@ public class Tablero {
     }
     
     
+    /**
+     * Coloca minas aleatorias en el tablero.
+     *  posFilaIgnorar  fila a evitar (donde se hizo el primer click).
+     *  posColumnaIgnorar columna a evitar (donde se hizo el primer click).
+     */
       
     private void generarMinas(int posFilaIgnorar, int posColumnaIgnorar) {
         int minasGeneradas = 0;//variable temp
@@ -90,10 +102,11 @@ public class Tablero {
         tablero.imprimirTablero();
         System.out.println("---");
         tablero.imprimirPistas();
+        System.out.println("---");
        
     }
     
-    
+    //Recorre todas las casillas y actualiza cuántas minas tiene cada una alrededor
     private void actualizarNumeroMinasAlrededor() {
         for (int i = 0; i < casillas.length; i++) {
             for (int j = 0; j < casillas[i].length; j++) {
@@ -105,6 +118,11 @@ public class Tablero {
         }
     }
     
+    /**
+     * Devuelve la lista de casillas alrededor de una posición (máx 8).
+     *  posFila fila de referencia
+     * posColumna columna de referencia
+     */
     private List<Casilla> obtenerCasillasAlrededor(int posFila, int posColumna) {
         List<Casilla> listaCasillas = new LinkedList<>();
         for (int i = 0; i < 8; i++) {
@@ -149,7 +167,7 @@ public class Tablero {
         }
         return listaCasillas;
     }
-    
+    //Devuelve una lista con todas las casillas que contienen minas.
      List<Casilla> obtenerCasillasConMinas() {
         List<Casilla> casillasConMinas = new LinkedList<>();
         for (int i = 0; i < casillas.length; i++) {
@@ -161,9 +179,16 @@ public class Tablero {
         }
         return casillasConMinas;
     }
-    
+    /**
+     * Lógica cuando el jugador selecciona una casilla. - Si es la primera
+     * jugada, genera minas. - Si toca una mina: se pierde. 
+     * - Si toca una vacía
+     * con 0 minas alrededor: se abre en cascada. 
+     * - Si toca un número: solo se
+     * abre esa casilla.
+     */
     public void seleccionarCasilla(int posFila, int posColumna) {
-        // >>> NUEVO: no abrir si está marcada
+        // no abrir si está marcada
         if (this.casillas[posFila][posColumna].isMarcada()) {
             return;
         }
@@ -189,7 +214,7 @@ public class Tablero {
         }
     }
     
-    // >>> NUEVO <<<
+   
 // Alterna bandera en una casilla. Devuelve true si cambió algo.
     public boolean toggleMarca(int posFila, int posColumna) {
         Casilla c = this.casillas[posFila][posColumna];

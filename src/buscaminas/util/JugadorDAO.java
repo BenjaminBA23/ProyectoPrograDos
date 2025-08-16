@@ -16,7 +16,7 @@ import javax.swing.table.DefaultTableModel;
  * @author pame
  */
 public class JugadorDAO {
-    //
+    //se agrega un jugador nuevo a la base de datos 
       public void registrarJugador(String nombre) {
         String sql = "IF NOT EXISTS (SELECT 1 FROM jugador WHERE nombre = ?) " +
                      "INSERT INTO jugador (nombre) VALUES (?)";
@@ -29,7 +29,7 @@ public class JugadorDAO {
             System.err.println("registrarJugador: " + e.getMessage());
         }
     }
-      
+      //actualiza las partidas jugadas y ganadas 
     public void actualizarGanadas(String nombre) {
         String sql = "UPDATE jugador SET partidas_ganadas = partidas_ganadas + 1 WHERE nombre = ?";
         try (Connection conn = ConexionBD.getConexion(); PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -39,7 +39,7 @@ public class JugadorDAO {
             System.err.println("actualizarGanadas: " + e.getMessage());
         }
     }
-    
+     //actualiza las partidas jugadas y perdidas
     public void actualizarPerdidas(String nombre) {
         String sql = "UPDATE jugador SET partidas_perdidas = partidas_perdidas + 1 WHERE nombre = ?";
         try (Connection conn = ConexionBD.getConexion();
