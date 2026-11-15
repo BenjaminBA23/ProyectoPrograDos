@@ -1,5 +1,11 @@
 # 🕹️ Proyecto Final – Buscaminas en Java
 
+<!-- local-development:start -->
+## Desarrollo local
+
+Consulta [RUNNING.md](RUNNING.md) para ubicar cada componente, abrirlo en su IDE, compilarlo y conocer las comprobaciones realizadas y los requisitos pendientes.
+<!-- local-development:end -->
+
 Proyecto desarrollado como entrega final del curso **Programación I** en la Universidad Técnica Nacional (UTN).  
 Implementa el clásico juego de Buscaminas con interfaz gráfica usando **Java Swing** y conexión a base de datos SQL Server para registrar estadísticas de los jugadores.
 
@@ -85,4 +91,3 @@ src/
 
 📜 Licencia
 Este proyecto es de uso académico. Puede ser modificado o adaptado para fines educativos.
-
